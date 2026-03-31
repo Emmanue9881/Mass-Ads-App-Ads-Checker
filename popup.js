@@ -11,12 +11,6 @@
  * Initializes popup event handlers and runtime UI state.
  *
  * @returns {void} Does not return a value.
- *
- * @example
- * ```javascript
- * document.addEventListener('DOMContentLoaded', initPopup);
- * // Expected: popup controls are wired and ready for interaction.
- * ```
  */
 function initPopup() {
   const checkBtn = document.getElementById('checkBtn');
@@ -26,52 +20,36 @@ function initPopup() {
   const tableBody = document.querySelector('#resultsTable tbody');
   const statusText = document.getElementById('statusText');
   const progressText = document.getElementById('progressText');
-  const themeSelect = document.getElementById('themeSelect');
+  const themeToggleBtn = document.getElementById('themeToggleBtn');
 
   /** @type {ScanResult[]} */
   let results = [];
-  const savedTheme = localStorage.getItem('theme') || 'light';
-  applyTheme(savedTheme);
-  themeSelect.value = savedTheme;
-
-  themeSelect.addEventListener('change', () => {
-    const selectedTheme = themeSelect.value;
-    localStorage.setItem('theme', selectedTheme);
-    applyTheme(selectedTheme);
-  });
-
-  const savedTheme = localStorage.getItem('theme') || 'light';
-  applyTheme(savedTheme);
-  themeSelect.value = savedTheme;
+  
+  let currentTheme = localStorage.getItem('theme') || 'light';
+  applyTheme(currentTheme);
+  updateThemeBtnText(currentTheme);
 
   /**
-   * Persists and applies a newly selected theme.
-   *
-   * @returns {void} Does not return a value.
-   *
-   * @example
-   * ```javascript
-   * themeSelect.value = 'dark';
-   * handleThemeChange();
-   * // Expected: localStorage theme becomes "dark" and dark class is applied.
-   * ```
+   * Updates the button text based on the active theme.
    */
-  function handleThemeChange() {
-    const selectedTheme = themeSelect.value;
-    localStorage.setItem('theme', selectedTheme);
-    applyTheme(selectedTheme);
+  function updateThemeBtnText(theme) {
+    themeToggleBtn.innerText = theme === 'light' ? 'Dark Theme' : 'Light Theme';
+  }
+
+  /**
+   * Toggles the current theme and saves it.
+   */
+  function handleThemeToggle() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('theme', currentTheme);
+    applyTheme(currentTheme);
+    updateThemeBtnText(currentTheme);
   }
 
   /**
    * Executes the domain scan workflow and updates UI progress.
    *
    * @returns {Promise<void>} Resolves when all scan batches complete.
-   *
-   * @example
-   * ```javascript
-   * await handleCheckClick();
-   * // Expected: results table is populated and progress reaches total count.
-   * ```
    */
   async function handleCheckClick() {
     const text = domainInput.value;
@@ -94,7 +72,6 @@ function initPopup() {
 
     const batchSize = 2;
 
-    // Process in small batches to avoid overloading browser/network resources.
     for (let i = 0; i < lines.length; i += batchSize) {
       const batch = lines.slice(i, i + batchSize);
       const batchResults = await Promise.all(batch.map(domain => checkDomainSmart(domain, fileType)));
@@ -116,14 +93,6 @@ function initPopup() {
 
   /**
    * Converts current scan results to CSV and triggers file download.
-   *
-   * @returns {void} Does not return a value.
-   *
-   * @example
-   * ```javascript
-   * handleDownloadClick();
-   * // Expected: browser downloads "checker_results.csv".
-   * ```
    */
   function handleDownloadClick() {
     let csv = 'File URL,Status,Lines\n';
@@ -140,7 +109,7 @@ function initPopup() {
     a.click();
   }
 
-  themeSelect.addEventListener('change', handleThemeChange);
+  themeToggleBtn.addEventListener('click', handleThemeToggle);
   checkBtn.addEventListener('click', handleCheckClick);
   downloadBtn.addEventListener('click', handleDownloadClick);
 }
@@ -151,12 +120,6 @@ function initPopup() {
  * @param {string} rawDomain User-provided domain value that may include protocol/path.
  * @param {string} fileType Target file name (`ads.txt` or `app-ads.txt`).
  * @returns {Promise<ScanResult>} Resolved scan result containing status and metadata.
- *
- * @example
- * ```javascript
- * const result = await checkDomainSmart('example.com', 'ads.txt');
- * // Expected: { domain: 'example.com', status: 'Valid'|'Empty File'|'Error', ... }
- * ```
  */
 async function checkDomainSmart(rawDomain, fileType) {
   const domain = rawDomain.replace(/^(https?:\/\/)?(www\.)?/, '').replace(/\/$/, '').split('/')[0];
@@ -210,12 +173,6 @@ async function checkDomainSmart(rawDomain, fileType) {
  *
  * @param {string} content Raw file contents fetched from an ads endpoint.
  * @returns {number} Number of valid records containing `DIRECT` or `RESELLER`.
- *
- * @example
- * ```javascript
- * const lines = countValidLines('google.com, pub-1, DIRECT');
- * // Expected: 1
- * ```
  */
 function countValidLines(content) {
   let count = 0;
@@ -243,13 +200,6 @@ function countValidLines(content) {
  *
  * @param {ScanResult} res Normalized scan result payload.
  * @param {HTMLTableSectionElement} tableBody Target `<tbody>` element for appending rows.
- * @returns {void} Does not return a value.
- *
- * @example
- * ```javascript
- * addResultToTable({ domain: 'example.com', status: 'Error', lines: 0, url: '-', cssClass: 'error' }, tableBody);
- * // Expected: one new row appears in the table.
- * ```
  */
 function addResultToTable(res, tableBody) {
   const tr = document.createElement('tr');
@@ -269,13 +219,6 @@ function addResultToTable(res, tableBody) {
  * Applies the selected theme to the popup root element.
  *
  * @param {string} theme Theme identifier (`light` or `dark`).
- * @returns {void} Does not return a value.
- *
- * @example
- * ```javascript
- * applyTheme('dark');
- * // Expected: <body> has class "dark".
- * ```
  */
 function applyTheme(theme) {
   document.body.classList.toggle('dark', theme === 'dark');
