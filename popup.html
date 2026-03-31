@@ -56,16 +56,27 @@
     #downloadBtn { width: 100%; background: var(--download-bg); margin-top: 0; }
     #downloadBtn:hover { background: var(--download-hover); }
     .top-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
-    #themeSelect { width: 110px; padding: 8px 10px; font-size: 13px; }
+
+    .theme-toggle-btn { 
+      width: 110px; 
+      padding: 8px 10px; 
+      font-size: 13px; 
+      background: var(--panel-bg); 
+      color: var(--text-main); 
+      border: 1px solid var(--border); 
+      border-radius: 6px; 
+      cursor: pointer; 
+      font-weight: 500;
+    }
+    .theme-toggle-btn:hover {
+      background: var(--table-head);
+    }
   </style>
 </head>
 <body>
   <div class="top-row">
     <h3>Mass Ads & App-Ads Checker</h3>
-    <select id="themeSelect" aria-label="Theme">
-      <option value="light">Light</option>
-      <option value="dark">Dark</option>
-    </select>
+    <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle Theme">Dark Theme</button>
   </div>
   <textarea id="domainList" placeholder="Enter domains here (one per line):&#10;example.com&#10;google.com"></textarea>
   
