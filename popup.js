@@ -118,18 +118,24 @@ function initPopup() {
  * Attempts multiple URL variants to find a valid ads file for a domain.
  *
  * @param {string} rawDomain User-provided domain value that may include protocol/path.
- * @param {string} fileType Target file name (`ads.txt` or `app-ads.txt`).
+ * @param {string} fileType Target file name (`ads.txt`, `app-ads.txt`, or `url`).
  * @returns {Promise<ScanResult>} Resolved scan result containing status and metadata.
  */
 async function checkDomainSmart(rawDomain, fileType) {
-  const domain = rawDomain.replace(/^(https?:\/\/)?(www\.)?/, '').replace(/\/$/, '').split('/')[0];
+  let urls = [];
 
-  const urls = [
-    `https://www.${domain}/${fileType}`,
-    `https://${domain}/${fileType}`,
-    `http://www.${domain}/${fileType}`,
-    `http://${domain}/${fileType}`
-  ];
+  if (fileType === 'url') {
+    const exactUrl = /^(https?:\/\/)/i.test(rawDomain) ? rawDomain : `https://${rawDomain}`;
+    urls = [exactUrl];
+  } else {
+    const domain = rawDomain.replace(/^(https?:\/\/)?(www\.)?/, '').replace(/\/$/, '').split('/')[0];
+    urls = [
+      `https://www.${domain}/${fileType}`,
+      `https://${domain}/${fileType}`,
+      `http://www.${domain}/${fileType}`,
+      `http://${domain}/${fileType}`
+    ];
+  }
 
   for (const url of urls) {
     try {
