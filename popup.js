@@ -7,11 +7,6 @@
  * @property {"valid"|"empty"|"error"} cssClass CSS status class used in table rendering.
  */
 
-/**
- * Initializes popup event handlers and runtime UI state.
- *
- * @returns {void} Does not return a value.
- */
 function initPopup() {
   const checkBtn = document.getElementById('checkBtn');
   const downloadBtn = document.getElementById('downloadBtn');
@@ -22,23 +17,16 @@ function initPopup() {
   const progressText = document.getElementById('progressText');
   const themeToggleBtn = document.getElementById('themeToggleBtn');
 
-  /** @type {ScanResult[]} */
   let results = [];
-  
   let currentTheme = localStorage.getItem('theme') || 'light';
+  
   applyTheme(currentTheme);
   updateThemeBtnText(currentTheme);
 
-  /**
-   * Updates the button text based on the active theme.
-   */
   function updateThemeBtnText(theme) {
     themeToggleBtn.innerText = theme === 'light' ? 'Dark Theme' : 'Light Theme';
   }
 
-  /**
-   * Toggles the current theme and saves it.
-   */
   function handleThemeToggle() {
     currentTheme = currentTheme === 'light' ? 'dark' : 'light';
     localStorage.setItem('theme', currentTheme);
@@ -46,11 +34,6 @@ function initPopup() {
     updateThemeBtnText(currentTheme);
   }
 
-  /**
-   * Executes the domain scan workflow and updates UI progress.
-   *
-   * @returns {Promise<void>} Resolves when all scan batches complete.
-   */
   async function handleCheckClick() {
     const text = domainInput.value;
     const lines = text.split('\n').map(l => l.trim()).filter(l => l);
@@ -70,7 +53,8 @@ function initPopup() {
     let completed = 0;
     progressText.innerText = `0/${lines.length}`;
 
-    const batchSize = 2;
+    // Увеличен размер пачки для максимальной утилизации сети браузера
+    const batchSize = 15;
 
     for (let i = 0; i < lines.length; i += batchSize) {
       const batch = lines.slice(i, i + batchSize);
@@ -91,9 +75,6 @@ function initPopup() {
     downloadBtn.style.display = 'block';
   }
 
-  /**
-   * Converts current scan results to CSV and triggers file download.
-   */
   function handleDownloadClick() {
     let csv = 'File URL,Status,Lines\n';
     results.forEach(r => {
@@ -114,13 +95,6 @@ function initPopup() {
   downloadBtn.addEventListener('click', handleDownloadClick);
 }
 
-/**
- * Attempts multiple URL variants to find a valid ads file for a domain.
- *
- * @param {string} rawDomain User-provided domain value that may include protocol/path.
- * @param {string} fileType Target file name (`ads.txt`, `app-ads.txt`, or `url`).
- * @returns {Promise<ScanResult>} Resolved scan result containing status and metadata.
- */
 async function checkDomainSmart(rawDomain, fileType) {
   let urls = [];
 
@@ -130,26 +104,28 @@ async function checkDomainSmart(rawDomain, fileType) {
   } else {
     const domain = rawDomain.replace(/^(https?:\/\/)?(www\.)?/, '').replace(/\/$/, '').split('/')[0];
     urls = [
-      `https://www.${domain}/${fileType}`,
       `https://${domain}/${fileType}`,
-      `http://www.${domain}/${fileType}`,
-      `http://${domain}/${fileType}`
+      `https://www.${domain}/${fileType}`,
+      `http://${domain}/${fileType}`,
+      `http://www.${domain}/${fileType}`
     ];
   }
 
-  for (const url of urls) {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 20000);
+  const fetchUrl = async (url) => {
+    const controller = new AbortController();
+    // Таймаут снижен до 7 секунд, чтобы не тормозить общую очередь
+    const timeoutId = setTimeout(() => controller.abort(), 7000);
 
+    try {
       const response = await fetch(url, { signal: controller.signal, cache: 'no-store' });
       clearTimeout(timeoutId);
 
       if (response.status === 200) {
         const text = await response.text();
 
+        // Защита от Soft 404
         if (text.toLowerCase().includes('<html') || text.toLowerCase().includes('<!doctype')) {
-          continue;
+          throw new Error("HTML content");
         }
 
         const validLines = countValidLines(text);
@@ -157,29 +133,32 @@ async function checkDomainSmart(rawDomain, fileType) {
           domain: rawDomain,
           status: validLines > 0 ? 'Valid' : 'Empty File',
           lines: validLines,
-          url,
+          url: url,
           cssClass: validLines > 0 ? 'valid' : 'empty'
         };
       }
+      throw new Error(`HTTP ${response.status}`);
     } catch (e) {
+      clearTimeout(timeoutId);
+      throw e;
     }
-  }
-
-  return {
-    domain: rawDomain,
-    status: 'Error',
-    lines: 0,
-    url: '-',
-    cssClass: 'error'
   };
+
+  try {
+    // Promise.any параллельно запускает все 4 запроса для домена
+    // Первый успешный возвращает результат, остальные прерываются или игнорируются
+    return await Promise.any(urls.map(url => fetchUrl(url)));
+  } catch (aggregateError) {
+    return {
+      domain: rawDomain,
+      status: 'Error',
+      lines: 0,
+      url: '-',
+      cssClass: 'error'
+    };
+  }
 }
 
-/**
- * Counts valid IAB seller records in ads content.
- *
- * @param {string} content Raw file contents fetched from an ads endpoint.
- * @returns {number} Number of valid records containing `DIRECT` or `RESELLER`.
- */
 function countValidLines(content) {
   let count = 0;
   const cleanContent = content.replace(/\uFEFF/g, '');
@@ -201,12 +180,6 @@ function countValidLines(content) {
   return count;
 }
 
-/**
- * Renders a scan result row in the results table body.
- *
- * @param {ScanResult} res Normalized scan result payload.
- * @param {HTMLTableSectionElement} tableBody Target `<tbody>` element for appending rows.
- */
 function addResultToTable(res, tableBody) {
   const tr = document.createElement('tr');
   const urlCell = res.url !== '-'
@@ -221,11 +194,6 @@ function addResultToTable(res, tableBody) {
   tableBody.appendChild(tr);
 }
 
-/**
- * Applies the selected theme to the popup root element.
- *
- * @param {string} theme Theme identifier (`light` or `dark`).
- */
 function applyTheme(theme) {
   document.body.classList.toggle('dark', theme === 'dark');
 }
