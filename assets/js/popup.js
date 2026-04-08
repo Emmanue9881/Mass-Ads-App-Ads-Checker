@@ -107,6 +107,7 @@ function initPopup() {
   const bulkCheckBtn = document.getElementById('bulkCheckBtn');
   const bulkStopBtn = document.getElementById('bulkStopBtn');
   const bulkDownloadBtn = document.getElementById('bulkDownloadBtn');
+  const bulkDownloadTxtBtn = document.getElementById('bulkDownloadTxtBtn');
   const bulkFileStatus = document.getElementById('bulkFileStatus');
   const bulkProgressValue = document.getElementById('bulkProgressValue');
   const bulkTimeValue = document.getElementById('bulkTimeValue');
@@ -288,6 +289,7 @@ function initPopup() {
     bulkLines = [];
     bulkCheckBtn.disabled = true;
     bulkDownloadBtn.style.display = 'none';
+    bulkDownloadTxtBtn.style.display = 'none';
     bulkResultsArray = [];
     bulkFileStatus.innerText = 'No file selected';
     bulkProgressValue.innerText = '0 / 0';
@@ -348,6 +350,7 @@ function initPopup() {
       bulkTimeValue.innerText = '00:00';
       bulkCheckBtn.disabled = bulkLines.length === 0;
       bulkDownloadBtn.style.display = 'none';
+      bulkDownloadTxtBtn.style.display = 'none';
       bulkFileInput.value = '';
     };
 
@@ -392,6 +395,7 @@ function initPopup() {
     modeToggleBtn.disabled = true;
     bulkResultsArray = [buildBulkHeader(fileType, includeStatus)];
     bulkDownloadBtn.style.display = 'none';
+    bulkDownloadTxtBtn.style.display = 'none';
 
     bulkCheckBtn.style.display = 'none';
     bulkStopBtn.style.display = 'block';
@@ -494,6 +498,7 @@ function initPopup() {
 
     if (bulkResultsArray.length > 1) {
       bulkDownloadBtn.style.display = 'block';
+      bulkDownloadTxtBtn.style.display = 'block';
     }
   }
 
@@ -502,6 +507,11 @@ function initPopup() {
   bulkDownloadBtn.addEventListener('click', () => {
     const csvContent = bulkResultsArray.join('\n');
     triggerDownload(csvContent, 'bulk_checker_results.csv');
+  });
+
+  bulkDownloadTxtBtn.addEventListener('click', () => {
+    const txtContent = bulkResultsArray.join('\n');
+    triggerDownload(txtContent, 'bulk_checker_results.txt');
   });
 
   function triggerDownload(content, filename) {
